@@ -37,6 +37,52 @@ class PdfWhatsappTest extends TestCase
             ->assertSee('https://wa.me/525512345678?text=', false);
     }
 
+    public function test_expediente_muestra_whatsapp_al_telefono_del_paciente(): void
+    {
+        [$usuario, $paciente] = $this->preparar();
+
+        $this->actingAs($usuario)->get(route('pacientes.show', $paciente))
+            ->assertOk()
+            ->assertSee('https://wa.me/525512345678?text='.rawurlencode('Hola José'), false)
+            ->assertSee(route('pacientes.pdf.plan', $paciente), false)
+            ->assertSee(route('pacientes.pdf.avance', $paciente), false);
+    }
+
+    public function test_alta_de_paciente_exige_telefono_valido(): void
+    {
+        [$usuario] = $this->preparar();
+        $datos = ['nombre' => 'Ana', 'apellidos' => 'Gómez', 'fecha_nacimiento' => '1995-01-01', 'sexo' => 'F', 'estatura_m' => 1.6];
+
+        $this->actingAs($usuario)->post(route('pacientes.store'), $datos)
+            ->assertSessionHasErrorsIn('paciente', 'telefono');
+        $this->actingAs($usuario)->post(route('pacientes.store'), $datos + ['telefono' => '12345'])
+            ->assertSessionHasErrorsIn('paciente', 'telefono');
+        $this->actingAs($usuario)->post(route('pacientes.store'), $datos + ['telefono' => '312 123 4567'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('523121234567', Paciente::where('nombre', 'Ana')->first()->telefono_whatsapp);
+    }
+
+    public function test_descarga_pdf_del_plan_de_alimentacion(): void
+    {
+        [$usuario, $paciente] = $this->preparar();
+
+        $res = $this->actingAs($usuario)->get(route('pacientes.pdf.plan', $paciente));
+        $res->assertOk()->assertHeader('content-type', 'application/pdf');
+        $this->assertStringStartsWith('%PDF', $res->getContent());
+    }
+
+    public function test_descarga_pdf_del_avance(): void
+    {
+        [$usuario, $paciente] = $this->preparar();
+        $c2 = $paciente->consultas()->create(['fecha_consulta' => now()]);
+        $c2->medicion()->create(['peso' => 78, 'imc' => 25.47]);
+
+        $res = $this->actingAs($usuario)->get(route('pacientes.pdf.avance', $paciente));
+        $res->assertOk()->assertHeader('content-type', 'application/pdf');
+        $this->assertStringStartsWith('%PDF', $res->getContent());
+    }
+
     public function test_descarga_pdf_del_paciente(): void
     {
         [$usuario, $paciente] = $this->preparar();

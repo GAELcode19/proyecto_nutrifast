@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
         ->scopeBindings()->name('consultas.show');
 
     Route::get('/pacientes/{paciente}/pdf', [PdfController::class, 'paciente'])->name('pacientes.pdf');
+    Route::get('/pacientes/{paciente}/pdf/plan', [PdfController::class, 'plan'])->name('pacientes.pdf.plan');
+    Route::get('/pacientes/{paciente}/pdf/avance', [PdfController::class, 'avance'])->name('pacientes.pdf.avance');
     Route::get('/pacientes/{paciente}/consultas/{consulta}/pdf', [PdfController::class, 'consulta'])
         ->scopeBindings()->name('consultas.pdf');
 

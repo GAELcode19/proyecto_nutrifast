@@ -50,9 +50,10 @@
             @else<div class="form-text">Se usa para calcular el IMC.</div>@endif
           </div>
           <div class="col-md-6">
-            <label for="p-tel" class="form-label">Teléfono</label>
-            <input id="p-tel" name="telefono" type="tel" class="form-control {{ $err->has('telefono') ? 'is-invalid' : '' }}" maxlength="20" value="{{ $v('telefono') }}">
-            @if($err->has('telefono'))<div class="invalid-feedback">{{ $err->first('telefono') }}</div>@endif
+            <label for="p-tel" class="form-label req">Teléfono (WhatsApp)</label>
+            <input id="p-tel" name="telefono" type="tel" inputmode="tel" autocomplete="off" class="form-control {{ $err->has('telefono') ? 'is-invalid' : '' }}" maxlength="20" placeholder="312 123 4567" value="{{ $v('telefono') }}">
+            @if($err->has('telefono'))<div class="invalid-feedback">{{ $err->first('telefono') }}</div>
+            @else<div class="form-text">10 dígitos. Si es de otro país, inclúyelo con lada (+1…).</div>@endif
           </div>
           <div class="col-md-6">
             <label for="p-correo" class="form-label">Correo</label>

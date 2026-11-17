@@ -10,7 +10,10 @@
   </ol></nav>
   <div class="nf-page-head">
     <div><h1>Progreso</h1><div class="nf-sub">{{ $paciente->nombre_completo }}</div></div>
-    <a href="{{ route('pacientes.show', $paciente) }}" class="btn btn-outline-secondary">← Volver al expediente</a>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ route('pacientes.show', $paciente) }}" class="btn btn-outline-secondary">← Volver al expediente</a>
+      <a href="{{ route('pacientes.pdf.avance', $paciente) }}" class="btn btn-primary">Descargar avance (PDF)</a>
+    </div>
   </div>
 
   <div class="nf-card nf-card-pad mb-3">

@@ -22,7 +22,13 @@ class PacienteRequest extends FormRequest
             'fecha_nacimiento' => ['required', 'date', 'before_or_equal:today'],
             'sexo' => ['required', 'in:F,M'],
             'estatura_m' => ['required', 'numeric', 'between:0.5,2.5'],
-            'telefono' => ['nullable', 'string', 'max:20'],
+            // 10 dígitos (México) o 11 a 15 con lada de país; se aceptan espacios, guiones, paréntesis y "+".
+            'telefono' => ['required', 'string', 'max:20', 'regex:/^\+?[\d\s().-]+$/', function ($attr, $valor, $fail) {
+                $n = strlen(preg_replace('/\D+/', '', (string) $valor));
+                if ($n < 10 || $n > 15) {
+                    $fail('Escribe un teléfono de 10 dígitos (o con lada de país) para poder enviarle WhatsApp.');
+                }
+            }],
             'correo' => ['nullable', 'email', 'max:150'],
             'antecedentes' => ['nullable', 'string', 'max:5000'],
         ];
@@ -43,7 +49,9 @@ class PacienteRequest extends FormRequest
             'estatura_m.required' => 'La estatura debe estar entre 0.50 y 2.50 m.',
             'estatura_m.numeric' => 'La estatura debe estar entre 0.50 y 2.50 m.',
             'estatura_m.between' => 'La estatura debe estar entre 0.50 y 2.50 m.',
+            'telefono.required' => 'Escribe el teléfono del paciente; se usa para enviarle WhatsApp.',
             'telefono.max' => 'El teléfono admite hasta 20 caracteres.',
+            'telefono.regex' => 'El teléfono sólo puede llevar números, espacios, guiones, paréntesis y "+".',
             'correo.email' => 'El correo no tiene un formato válido.',
             'correo.max' => 'El correo admite hasta 150 caracteres.',
         ];

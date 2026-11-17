@@ -69,11 +69,17 @@ class Paciente extends Model
         return strlen($digitos) >= 11 ? $digitos : null;
     }
 
-    /** Liga de WhatsApp con el mensaje ya escrito, o null si el paciente no tiene un teléfono válido. */
-    public function whatsappUrl(string $mensaje): ?string
+    /** Saludo por defecto para abrir una conversación de WhatsApp con el paciente. */
+    public function mensajeWhatsapp(): string
+    {
+        return "Hola {$this->nombre}, te escribimos de tu consulta de nutrición.";
+    }
+
+    /** Liga de WhatsApp al teléfono registrado del paciente, o null si no tiene un teléfono válido. */
+    public function whatsappUrl(?string $mensaje = null): ?string
     {
         return $this->telefono_whatsapp
-            ? 'https://wa.me/'.$this->telefono_whatsapp.'?text='.rawurlencode($mensaje)
+            ? 'https://wa.me/'.$this->telefono_whatsapp.'?text='.rawurlencode($mensaje ?? $this->mensajeWhatsapp())
             : null;
     }
 }

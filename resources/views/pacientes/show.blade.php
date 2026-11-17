@@ -12,9 +12,21 @@
     </div>
     <div class="d-flex flex-wrap gap-2">
       <button type="button" class="btn btn-outline-secondary" data-abrir-modal>Editar datos</button>
-      <a class="btn btn-outline-secondary" href="{{ route('pacientes.pdf', $paciente) }}">Descargar PDF</a>
-      @if($paciente->proximaCita && ($wa = $paciente->proximaCita->setRelation('paciente', $paciente)->whatsappUrl()))
-        <a class="btn btn-wa" href="{{ $wa }}" target="_blank" rel="noopener">Recordar cita por WhatsApp</a>
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Descargar PDF</button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{{ route('pacientes.pdf', $paciente) }}">Expediente general</a></li>
+          <li><a class="dropdown-item" href="{{ route('pacientes.pdf.plan', $paciente) }}">Plan de alimentación</a></li>
+        </ul>
+      </div>
+      <a class="btn btn-outline-secondary" href="{{ route('pacientes.pdf.avance', $paciente) }}">Descargar avance</a>
+      @if($wa = $paciente->whatsappUrl())
+        <a class="btn btn-wa" href="{{ $wa }}" target="_blank" rel="noopener" title="Abrir WhatsApp con {{ $paciente->telefono }}">WhatsApp</a>
+        @if($paciente->proximaCita)
+          <a class="btn btn-wa" href="{{ $paciente->proximaCita->setRelation('paciente', $paciente)->whatsappUrl() }}" target="_blank" rel="noopener">Recordar cita</a>
+        @endif
+      @else
+        <button type="button" class="btn btn-outline-secondary" data-abrir-modal title="Registra un teléfono válido para enviar WhatsApp">Agregar teléfono</button>
       @endif
       @if($consultas->count() >= 2)
         <a class="btn btn-outline-primary" href="{{ route('progreso.show', $paciente) }}">Ver progreso</a>
