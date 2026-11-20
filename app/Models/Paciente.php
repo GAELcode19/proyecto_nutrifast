@@ -75,6 +75,13 @@ class Paciente extends Model
         return "Hola {$this->nombre}, te escribimos de tu consulta de nutrición.";
     }
 
+    /** Mensaje para invitar a regresar a un paciente que lleva tiempo sin acudir. */
+    public function mensajeSeguimiento(): string
+    {
+        return "Hola {$this->nombre}, hace tiempo que no te vemos en tu consulta de nutrición. "
+            .'Nos daría gusto seguir acompañándote en tu progreso, ¿te gustaría agendar una cita?';
+    }
+
     /** Liga de WhatsApp al teléfono registrado del paciente, o null si no tiene un teléfono válido. */
     public function whatsappUrl(?string $mensaje = null): ?string
     {

@@ -39,6 +39,20 @@
       if (modalEl.hasAttribute("data-reabrir")) modal.show();
     }
 
+    // Eliminar paciente: el botón se habilita sólo al escribir el nombre completo
+    var formEliminar = document.getElementById("form-eliminar");
+    if (formEliminar && window.bootstrap) {
+      var norm = function (t) { return t.trim().replace(/\s+/g, " ").toLowerCase(); };
+      var campo = document.getElementById("e-confirmacion"), boton = document.getElementById("btn-confirmar-eliminar");
+      var elModal = document.getElementById("modal-eliminar");
+      var revisar = function () { boton.disabled = norm(campo.value) !== norm(formEliminar.dataset.nombre); };
+      campo.addEventListener("input", revisar);
+      formEliminar.addEventListener("submit", function () { boton.disabled = true; });
+      elModal.addEventListener("shown.bs.modal", function () { campo.focus(); });
+      elModal.addEventListener("hidden.bs.modal", function () { campo.value = ""; revisar(); });
+      if (elModal.hasAttribute("data-reabrir")) bootstrap.Modal.getOrCreateInstance(elModal).show();
+    }
+
     // Búsqueda de pacientes: envía el formulario al dejar de escribir
     var buscar = document.getElementById("buscar");
     if (buscar) {

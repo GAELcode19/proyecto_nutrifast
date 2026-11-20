@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProgresoController;
+use App\Http\Controllers\SeguimientoController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/pacientes');
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pacientes', [PacienteController::class, 'store'])->name('pacientes.store');
     Route::get('/pacientes/{paciente}', [PacienteController::class, 'show'])->name('pacientes.show');
     Route::put('/pacientes/{paciente}', [PacienteController::class, 'update'])->name('pacientes.update');
+    Route::delete('/pacientes/{paciente}', [PacienteController::class, 'destroy'])->name('pacientes.destroy');
 
     Route::get('/pacientes/{paciente}/consultas/create', [ConsultaController::class, 'create'])->name('consultas.create');
     Route::post('/pacientes/{paciente}/consultas', [ConsultaController::class, 'store'])->name('consultas.store');
@@ -36,5 +38,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/pacientes/{paciente}/progreso', [ProgresoController::class, 'show'])->name('progreso.show');
 
+    Route::get('/seguimiento', [SeguimientoController::class, 'index'])->name('seguimiento.index');
     Route::get('/agenda', [CitaController::class, 'index'])->name('citas.index');
 });

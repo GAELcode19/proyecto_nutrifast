@@ -156,3 +156,6 @@ details.nf-optional > summary{ cursor:pointer; font-weight:600; color:var(--nf-a
   border:0; background:none; text-align:left; border-radius:.5rem; color:var(--nf-ink); font:inherit;
 }
 .nf-nav button:hover{ background:var(--nf-bg); }
+
+/* Zona de peligro (eliminar paciente) */
+.nf-danger-zone{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; border:1px solid var(--nf-danger); border-radius:.75rem; background:#fff5f4; color:#7a271a; }

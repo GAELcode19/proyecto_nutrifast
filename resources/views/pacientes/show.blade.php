@@ -88,6 +88,37 @@
       </ul>
     </div>
   </div>
+
+  {{-- Zona de peligro: al final de la página y lejos de los botones de uso diario. --}}
+  <section class="nf-danger-zone mt-5" aria-labelledby="zona-peligro">
+    <div>
+      <h2 class="h6 mb-1" id="zona-peligro">Eliminar paciente</h2>
+      <p class="small mb-0">Borra a este paciente con todas sus consultas, mediciones, medicamentos y citas. No se puede deshacer.</p>
+    </div>
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal-eliminar">Eliminar paciente…</button>
+  </section>
 </main>
 @include('pacientes._form', ['paciente' => $paciente])
+@php $errEliminar = $errors->getBag('eliminar'); @endphp
+<div class="modal fade" id="modal-eliminar" tabindex="-1" aria-labelledby="modal-eliminar-titulo" aria-hidden="true" @if($errEliminar->any()) data-reabrir @endif>
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" method="POST" action="{{ route('pacientes.destroy', $paciente) }}" novalidate id="form-eliminar" data-nombre="{{ $paciente->nombre_completo }}">
+      @csrf @method('DELETE')
+      <div class="modal-header">
+        <h2 class="modal-title h5 text-danger" id="modal-eliminar-titulo">¿Eliminar a {{ $paciente->nombre_completo }}?</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Se borrarán de forma permanente <strong>{{ $consultas->count() }} {{ $consultas->count() === 1 ? 'consulta' : 'consultas' }}</strong> y todas las citas del paciente. Esta acción no se puede deshacer.</p>
+        <label for="e-confirmacion" class="form-label">Para confirmar, escribe <strong class="user-select-all">{{ $paciente->nombre_completo }}</strong></label>
+        <input id="e-confirmacion" name="confirmacion" class="form-control {{ $errEliminar->has('confirmacion') ? 'is-invalid' : '' }}" autocomplete="off" spellcheck="false">
+        @if($errEliminar->has('confirmacion'))<div class="invalid-feedback">{{ $errEliminar->first('confirmacion') }}</div>@endif
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-danger" id="btn-confirmar-eliminar" disabled>Eliminar definitivamente</button>
+      </div>
+    </form>
+  </div>
+</div>
 @endsection
