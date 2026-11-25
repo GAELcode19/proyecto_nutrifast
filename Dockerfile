@@ -19,4 +19,5 @@ RUN npm ci && npm run build
 # si ya existen, el seeder falla en el primer registro y la app arranca igual.
 CMD php artisan migrate --force \
     && { [ "$SEED_DEMO" != "true" ] || php artisan db:seed --force || echo "Seeder omitido: revisa el error de arriba"; } \
+    && { php artisan db:seed --class=UsuariosSeeder --force || echo "UsuariosSeeder fallo: revisa el error de arriba"; } \
     && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
