@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Detrás de Cloudflare Tunnel (cloudflared se conecta desde esta misma máquina) se confía
         // en X-Forwarded-Proto para que las URLs y las cookies salgan como HTTPS.
-        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+        // En Render (define RENDER=true) la app solo recibe trafico a traves de su proxy.
+        $middleware->trustProxies(at: env('RENDER') ? '*' : ['127.0.0.1', '::1']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
